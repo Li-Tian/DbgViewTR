@@ -31,7 +31,14 @@ namespace DbgViewTR
                 file_name = file_name.Substring(slash_location + 1);
             }
             MethodBase mb = sf.GetMethod();
-            method_name = mb.ReflectedType.ToString() + "#" + mb.ToString();
+            if (file_name == "")
+            {
+                method_name = mb.ReflectedType.ToString() + "#" + mb.ToString();
+            }
+            else
+            {
+                method_name = mb.Name;
+            }
             line_number = sf.GetFileLineNumber();
             column_number = sf.GetFileColumnNumber();
             thread_id = Thread.CurrentThread.ManagedThreadId;
@@ -96,12 +103,29 @@ namespace DbgViewTR
 #endif
         }
 
+        public static T log<T>(T obj)
+        {
+#if DEBUG
+            StackFrame sf = new StackFrame(1, true);
+            DbgData dd = new DbgData(sf);
+            log(dd, "{0}", obj?.ToString());
+#endif
+            return obj;
+        }
+
 #if DEBUG
         private static void log(DbgData dd, string format, params object[] args)
         {
             if (format == "<")
             {
-                indent.Value -= 2;
+                if (indent.Value > 1)
+                {
+                    indent.Value -= 2;
+                }
+                else
+                {
+                    Debug.WriteLine(String.Format("[{0}]Warning : log indent value error", project_key));
+                }
             }
             string indentStr = "".PadLeft(indent.Value);
             string dbgStr;
