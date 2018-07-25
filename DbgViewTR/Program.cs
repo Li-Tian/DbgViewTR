@@ -10,16 +10,16 @@ namespace DbgViewTR
     {
         static void Main(string[] args)
         {
-            TR.enter();
+            TR.Enter();
             doSomething();
-            TR.exit();
+            TR.Exit();
         }
 
         static int doSomething()
         {
-            TR.enter();
-            TR.log("Do something.");
-            return TR.exit(1);
+            TR.Enter();
+            TR.Log("Do something.");
+            return TR.Exit(1);
         }
     }
 }
